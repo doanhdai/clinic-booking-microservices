@@ -1,6 +1,7 @@
 package com.myclinic.user.controller;
 
 import com.myclinic.user.dto.UserInfoDTO;
+import com.myclinic.user.entity.User;
 import com.myclinic.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,15 @@ import java.util.List;
 public class UserController {
     
     private final UserService userService;
-    
+
+
+    @GetMapping
+    public ResponseEntity<List<User>> getUsers() {
+        log.info("GET /api/users - Fetching users");
+        List<User> user = userService.getUsers();
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserInfoDTO> getUserById(@PathVariable Integer userId) {
         log.info("GET /api/users/{} - Fetching user by ID", userId);

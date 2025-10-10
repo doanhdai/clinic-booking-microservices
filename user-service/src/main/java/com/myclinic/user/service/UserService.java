@@ -16,7 +16,11 @@ import java.util.stream.Collectors;
 public class UserService {
     
     private final UserRepository userRepository;
-    
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
     public UserInfoDTO getUserById(Integer userId) {
         log.info("Fetching user by ID: {}", userId);
         return userRepository.findById(userId)
