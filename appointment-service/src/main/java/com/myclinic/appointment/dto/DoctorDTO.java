@@ -1,7 +1,6 @@
-package com.myclinic.doctor.dto;
+package com.myclinic.appointment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

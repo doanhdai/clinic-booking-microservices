@@ -4,12 +4,16 @@ server:
 spring:
   application:
     name: doctor-service
+  spring:
+    jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: Asia/Ho_Chi_Minh
   
   # Database configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/doctor_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/doctor_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
     username: root
-    password: 
+    password: Oanh2004!
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA/Hibernate configuration
