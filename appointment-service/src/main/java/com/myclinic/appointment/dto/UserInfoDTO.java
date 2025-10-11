@@ -1,7 +1,6 @@
-package com.myclinic.doctor.dto;
+package com.myclinic.appointment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,22 +11,15 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorDTO {
-    
-    private Integer userId;
-    private String specialization;
-    private String description;
-    private String address;
-    private String bankNumber;
-    private String bankName;
-    private String bankId;
-    
-    // Thông tin user từ user-service (sẽ được enrich qua Feign client)
+public class UserInfoDTO {
+
+    private Integer id;
     private String fullName;
     private LocalDate birth;
     private String gender;
     private String email;
     private String phone;
+    private String role;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
