@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +24,9 @@ public class Doctor {
     
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "address", nullable = false, length = 255)
+    private String address;
     
     @Column(name = "bank_number")
     private String bankNumber;
@@ -34,12 +36,7 @@ public class Doctor {
     
     @Column(name = "bank_id")
     private String bankId;
-    
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-    
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+
+    @Column(columnDefinition = "POINT SRID 4326")
+    private Point location;
 }

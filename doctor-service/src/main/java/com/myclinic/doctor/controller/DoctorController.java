@@ -32,33 +32,40 @@ public class DoctorController {
         List<DoctorDTO> doctors = doctorService.getDoctorsBySpecialization(specialization);
         return ResponseEntity.ok(doctors);
     }
-    
+
     @GetMapping("/search")
     public ResponseEntity<List<DoctorDTO>> searchDoctors(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String specialization) {
-        
-        log.info("GET /api/doctors/search - keyword: {}, specialization: {}", keyword, specialization);
-        
-        List<DoctorDTO> doctors;
-        
-        if (specialization != null && keyword != null) {
-            doctors = doctorService.searchDoctorsBySpecializationAndKeyword(specialization, keyword);
-        } else if (specialization != null) {
-            doctors = doctorService.getDoctorsBySpecialization(specialization);
-        } else if (keyword != null) {
-            doctors = doctorService.searchDoctors(keyword);
-        } else {
-            doctors = doctorService.getAllDoctors();
+            @RequestParam(required = false) String specialization,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lng,
+            @RequestParam(required = false, defaultValue = "10") Double radiusKm
+    ) {
+        // nếu chỉ có lat hoặc lng, coi như không dùng tìm kiếm theo location tọa độ
+        if (!allOrNone(lat, lng)) {
+            lat = lng  = null;
         }
-        
-        return ResponseEntity.ok(doctors);
+
+        var result = doctorService.searchDoctorsAdvanced(
+                specialization, fullName, address, lat, lng, radiusKm
+        );
+        return ResponseEntity.ok(result);
     }
-    
+
+    private boolean allOrNone(Double lat, Double lng) {
+        int cnt = 0;
+        if (lat != null) cnt++;
+        if (lng != null) cnt++;
+        return cnt == 0 || cnt == 2;
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Integer userId) {
-        log.info("GET /api/doctors/{} - Fetching doctor by ID", userId);
-        // TODO: Implement getDoctorById method in service
-        return ResponseEntity.notFound().build();
+        DoctorDTO doctor = doctorService.getDoctorById(userId);
+        if (doctor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(doctor);
     }
 }

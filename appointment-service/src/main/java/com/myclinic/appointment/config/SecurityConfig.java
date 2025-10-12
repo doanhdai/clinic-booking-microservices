@@ -1,4 +1,4 @@
-package com.myclinic.doctor.config;
+package com.myclinic.appointment.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +13,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/doctors/**").permitAll()
-                .requestMatchers("/actuator/**", "/error").permitAll()
-                .anyRequest().authenticated()
-            )
-            .httpBasic(httpBasic -> {});
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/appointments/**", "/error").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(httpBasic -> {});
 
         return http.build();
     }

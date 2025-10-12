@@ -4,12 +4,15 @@ server:
 spring:
   application:
     name: appointment-service
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Ho_Chi_Minh
   
   # Database configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/appointment_db
+    url: jdbc:mysql://localhost:3306/appointment_db?serverTimezone=Asia/Ho_Chi_Minh
     username: root
-    password: Phuong35
+    password: Oanh2004!
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA/Hibernate configuration
