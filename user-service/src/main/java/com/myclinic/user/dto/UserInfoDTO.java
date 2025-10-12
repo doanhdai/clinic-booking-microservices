@@ -1,9 +1,11 @@
 package com.myclinic.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,4 +28,7 @@ public class UserInfoDTO {
     private LocalDateTime updatedAt;
     private Integer status;
     private String avatar;
+    private String address;
+    private Double lat;  // vi do
+    private Double lng;  // kinh do
 }

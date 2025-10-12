@@ -8,7 +8,17 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
+    @Mapping(target = "lat", ignore = true)
+    @Mapping(target = "lng", ignore = true)
     UserInfoDTO toDto(User user);
+
+    @AfterMapping
+    default void mapLocation(User user, @MappingTarget UserInfoDTO dto) {
+        if (user.getLocation() != null) {
+            dto.setLat(user.getLocation().getY());
+            dto.setLng(user.getLocation().getX());
+        }
+    }
 
     List<UserInfoDTO> toDtoList(List<User> entities);
 

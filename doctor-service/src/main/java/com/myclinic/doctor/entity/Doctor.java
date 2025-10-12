@@ -24,9 +24,6 @@ public class Doctor {
     
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "address", nullable = false, length = 255)
-    private String address;
     
     @Column(name = "bank_number")
     private String bankNumber;
@@ -36,7 +33,4 @@ public class Doctor {
     
     @Column(name = "bank_id")
     private String bankId;
-
-    @Column(columnDefinition = "POINT SRID 4326")
-    private Point location;
 }

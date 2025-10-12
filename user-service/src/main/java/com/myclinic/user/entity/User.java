@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,6 +55,12 @@ public class User {
 
     @Column(name = "avatar", length = 255)
     private String avatar;
+
+    @Column(name = "address", nullable = false, length = 255)
+    private String address;
+
+    @Column(name = "location", columnDefinition = "POINT SRID 4326")
+    private Point location;
 
     public enum Gender {
         male, female, other

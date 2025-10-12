@@ -26,4 +26,7 @@ public class UserInfoDTO {
     private LocalDateTime updatedAt;
     private Integer status;
     private String avatar;
+    private String address;
+    private Double lat;  // vi do
+    private Double lng;  // kinh do
 }

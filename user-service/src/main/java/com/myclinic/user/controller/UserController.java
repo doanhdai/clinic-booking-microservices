@@ -21,9 +21,9 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserInfoDTO>> getUsers() {
         log.info("GET /api/users - Fetching users");
-        List<User> user = userService.getUsers();
+        List<UserInfoDTO> user = userService.getUsers();
         return ResponseEntity.ok(user);
     }
 

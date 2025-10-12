@@ -16,7 +16,6 @@ public class DoctorDTO {
     private Integer userId;
     private String specialization;
     private String description;
-    private String address;
     private String bankNumber;
     private String bankName;
     private String bankId;
@@ -33,4 +32,7 @@ public class DoctorDTO {
     private LocalDateTime updatedAt;
     private Integer status;
     private String avatar;
+    private String address;
+    private Double lat;  // vi do
+    private Double lng;  // kinh do
 }

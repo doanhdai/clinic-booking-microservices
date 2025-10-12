@@ -22,6 +22,9 @@ public interface DoctorMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "status",   ignore = true)
     @Mapping(target = "avatar",   ignore = true)
+    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "lat", ignore = true)
+    @Mapping(target = "lng", ignore = true)
     DoctorDTO toDto(Doctor entity);
 
     List<DoctorDTO> toDtoList(List<Doctor> entities);
@@ -30,7 +33,6 @@ public interface DoctorMapper {
     @Mapping(target = "userId", source = "entity.userId")
     @Mapping(target = "specialization", source = "entity.specialization")
     @Mapping(target = "description", source = "entity.description")
-    @Mapping(target = "address", source = "entity.address")
     @Mapping(target = "bankNumber", source = "entity.bankNumber")
     @Mapping(target = "bankName", source = "entity.bankName")
     @Mapping(target = "bankId", source = "entity.bankId")
@@ -43,6 +45,9 @@ public interface DoctorMapper {
     @Mapping(target = "updatedAt", source = "user.updatedAt")
     @Mapping(target = "status", source = "user.status")
     @Mapping(target = "avatar", source = "user.avatar")
+    @Mapping(target = "address", source = "user.address")
+    @Mapping(target = "lat", source = "user.lat")
+    @Mapping(target = "lng", source = "user.lng")
     DoctorDTO toDto(Doctor entity, UserInfoDTO user);
 
     // DTO -> Entity
