@@ -18,6 +18,11 @@ import java.util.stream.Collectors;
 public class UserService {
     
     private final UserRepository userRepository;
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+
     private final UserMapper userMapper;
     
     public UserInfoDTO getUserById(Integer userId) {
