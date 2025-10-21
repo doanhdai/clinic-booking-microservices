@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  # Discovery Service
+  discovery-service:
+    image: clinic-booking-microservices/discovery-service:latest
+    container_name: clinic-discovery
+    ports:
+      - "8761:8761"
+    networks:
+      - clinic-network
+
+  # Config Service
+  config-service:
+    image: clinic-booking-microservices/config-service:latest
+    container_name: clinic-config
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=native
+    networks:
+      - clinic-network
+    depends_on:
+      - discovery-service
+
+  # User Service
+  user-service:
+    image: clinic-booking-microservices/user-service:latest
+    container_name: clinic-user
+    ports:
+      - "8081:8081"
+    environment:
+      - CONFIG_SERVER_HOST=config-service
+      - EUREKA_HOST=discovery-service
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASSWORD=
+    networks:
+      - clinic-network
+    depends_on:
+      - discovery-service
+      - config-service
+
+  # Doctor Service
+  doctor-service:
+    image: clinic-booking-microservices/doctor-service:latest
+    container_name: clinic-doctor
+    ports:
+      - "8083:8083"
+    environment:
+      - CONFIG_SERVER_HOST=config-service
+      - EUREKA_HOST=discovery-service
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASSWORD=
+    networks:
+      - clinic-network
+    depends_on:
+      - discovery-service
+      - config-service
+
+  # Appointment Service
+  appointment-service:
+    image: clinic-booking-microservices/appointment-service:latest
+    container_name: clinic-appointment
+    ports:
+      - "8082:8082"
+    environment:
+      - CONFIG_SERVER_HOST=config-service
+      - EUREKA_HOST=discovery-service
+      - DB_HOST=host.docker.internal
+      - DB_USER=root
+      - DB_PASSWORD=
+    networks:
+      - clinic-network
+    depends_on:
+      - discovery-service
+      - config-service
+
+  # Gateway Service
+  gateway-service:
+    image: clinic-booking-microservices/gateway-service:latest
+    container_name: clinic-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_HOST=discovery-service
+    networks:
+      - clinic-network
+    depends_on:
+      - discovery-service
+      - config-service
+
+networks:
+  clinic-network:
+    driver: bridge

@@ -38,4 +38,17 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    //Lấy danh sách cuộc hẹn của 1 bác sĩ
+    @Query("""
+        SELECT a FROM Appointment a
+        WHERE a.doctorId = :doctorId
+        ORDER BY a.appointmentStarttime ASC
+        """)
+    List<Appointment> findAppointmentsByDoctorId(
+            @Param("doctorId") Integer doctorId
+    );
+
+  //update appointment
+
 }

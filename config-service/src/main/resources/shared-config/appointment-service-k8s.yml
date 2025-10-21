@@ -1,4 +1,4 @@
-# Appointment Service Configuration
+# Appointment Service Configuration for Kubernetes
 server:
   port: 8082
 
@@ -9,18 +9,18 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Ho_Chi_Minh
   
-  # Database configuration
+  # Database configuration - will be overridden by environment variables
   datasource:
-    url: jdbc:mysql://localhost:3306/appointment_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
-    username: root
-    password: 
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql-service:3306/appointment_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA/Hibernate configuration
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -30,7 +30,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://discovery-service:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
   instance:
@@ -58,9 +58,9 @@ management:
 # Logging configuration
 logging:
   level:
-    com.myclinic.appointment: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.myclinic.appointment: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
 
 # Custom application properties
 app:

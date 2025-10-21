@@ -38,6 +38,9 @@ public class User {
     @Column(name = "phone", nullable = false, unique = true, length = 30)
     private String phone;
 
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, columnDefinition = "ENUM('patient', 'doctor', 'admin') DEFAULT 'patient'")
     private Role role = Role.patient;

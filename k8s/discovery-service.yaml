@@ -1,0 +1,59 @@
+# Discovery Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-service
+  namespace: clinic-booking
+  labels:
+    app: discovery-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-service
+  template:
+    metadata:
+      labels:
+        app: discovery-service
+    spec:
+      containers:
+      - name: discovery-service
+        image: clinic-booking/discovery-service:latest
+        ports:
+        - containerPort: 8761
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8761
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8761
+          initialDelaySeconds: 30
+          periodSeconds: 5
+---
+# Discovery Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: discovery-service
+  namespace: clinic-booking
+spec:
+  selector:
+    app: discovery-service
+  ports:
+  - port: 8761
+    targetPort: 8761
+  type: ClusterIP

@@ -1,6 +1,8 @@
 package com.myclinic.user.controller;
 
 import com.myclinic.user.dto.UserInfoDTO;
+import com.myclinic.user.dto.UserAccountDTO;
+import com.myclinic.user.dto.ResetPasswordRequest;
 import com.myclinic.user.entity.User;
 import com.myclinic.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,18 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // ========== ACCOUNT MANAGEMENT APIs ==========
+    
+    /**
+     * Lấy danh sách tài khoản (không bao gồm password)
+     */
+    @GetMapping("/accounts")
+    public ResponseEntity<List<UserAccountDTO>> getAllUserAccounts() {
+        log.info("GET /api/users/accounts - Fetching all user accounts");
+        List<UserAccountDTO> accounts = userService.getAllUserAccounts();
+        return ResponseEntity.ok(accounts);
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserInfoDTO> getUserById(@PathVariable Integer userId) {
         log.info("GET /api/users/{} - Fetching user by ID", userId);
@@ -37,17 +51,33 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
     
-    @GetMapping("/batch")
-    public ResponseEntity<List<UserInfoDTO>> getUsersByIds(@RequestParam List<Integer> userIds) {
-        log.info("GET /api/users/batch - Fetching users by IDs: {}", userIds);
-        List<UserInfoDTO> users = userService.getUsersByIds(userIds);
-        return ResponseEntity.ok(users);
+    /**
+     * Reset password cho user theo email
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetUserPassword(@RequestBody ResetPasswordRequest request) {
+        log.info("POST /api/users/reset-password - Resetting password for email: {}", request.getEmail());
+        
+        boolean success = userService.resetUserPassword(request);
+        if (success) {
+            return ResponseEntity.ok().body("Password reset successfully for user: " + request.getEmail());
+        } else {
+            return ResponseEntity.badRequest().body("User not found with email: " + request.getEmail());
+        }
     }
     
-    @GetMapping("/doctors")
-    public ResponseEntity<List<UserInfoDTO>> getActiveDoctors() {
-        log.info("GET /api/users/doctors - Fetching active doctors");
-        List<UserInfoDTO> doctors = userService.getActiveDoctors();
-        return ResponseEntity.ok(doctors);
+    /**
+     * Reset password về mặc định (123) cho user theo email
+     */
+    @PostMapping("/reset-password-default")
+    public ResponseEntity<?> resetPasswordToDefault(@RequestParam String email) {
+        log.info("POST /api/users/reset-password-default - Resetting password to default for email: {}", email);
+        
+        boolean success = userService.resetPasswordToDefault(email);
+        if (success) {
+            return ResponseEntity.ok().body("Password reset to default (123) successfully for user: " + email);
+        } else {
+            return ResponseEntity.badRequest().body("User not found with email: " + email);
+        }
     }
 }
