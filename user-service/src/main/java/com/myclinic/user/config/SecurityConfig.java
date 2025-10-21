@@ -19,7 +19,8 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .httpBasic(httpBasic -> {});
+            .httpBasic(httpBasic -> {})
+            .formLogin(form -> form.disable());
         
         return http.build();
     }

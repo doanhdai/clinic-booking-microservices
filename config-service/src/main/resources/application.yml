@@ -4,15 +4,20 @@ server:
 spring:
   application:
     name: config-service
+  profiles:
+    active: native
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/shared-config
-        git:
-          uri: file://${user.home}/clinic-config-repo
-          search-paths: shared-config
-          default-label: main
+
+# Disable Eureka for Config Service
+eureka:
+  client:
+    enabled: false
+  instance:
+    enabled: false
 
 # Management endpoints
 management:

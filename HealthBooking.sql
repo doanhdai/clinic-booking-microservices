@@ -21,13 +21,13 @@ CREATE TABLE users (
 
 -- Tạo 2 Bác sĩ
 INSERT INTO users (id, full_name, birth, gender, email, phone, password, role, status, avatar, address, location) VALUES
-(1, 'Nguyễn Văn An', '1985-05-20', 'male', 'dr.nguyenvanan@clinic.com', '0901112221', 'hashed_password_placeholder', 'doctor', 1, 'avatars/doctor_an.jpg',  '273 An Dương Vương, Phường Chợ Quán, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.682414, 10.760130), 4326)),
-(2, 'Trần Thị Bích', '1990-11-15', 'female', 'dr.tranthibich@clinic.com', '0901112222', 'hashed_password_placeholder', 'doctor', 1, 'avatars/doctor_bich.jpg', '72 Lê Thánh Tôn, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.702077, 10.777799), 4326));
+(1, 'Nguyễn Văn An', '1985-05-20', 'male', 'dr.nguyenvanan@clinic.com', '0901112221', '123', 'doctor', 1, 'avatars/doctor_an.jpg',  '273 An Dương Vương, Phường Chợ Quán, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.682414, 10.760130), 4326)),
+(2, 'Trần Thị Bích', '1990-11-15', 'female', 'dr.tranthibich@clinic.com', '0901112222', '123', 'doctor', 1, 'avatars/doctor_bich.jpg', '72 Lê Thánh Tôn, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.702077, 10.777799), 4326));
 
 -- Tạo 2 Bệnh nhân
 INSERT INTO users (id, full_name, birth, gender, email, phone, password, role, status, avatar, address, location) VALUES
-(3, 'Lê Văn Cường', '1995-02-10', 'male', 'lecuong@email.com', '0903334443', 'hashed_password_placeholder', 'patient', 1, 'avatars/patient_cuong.jpg', '171 Đ. Cao Đạt, Phường Chợ Quán, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.683662, 10.754311), 4326)),
-(4, 'Phạm Thị Dung', '2000-07-30', 'female', 'phamtdung@email.com', '0903334444', 'hashed_password_placeholder', 'patient', 1, 'avatars/patient_dung.jpg', '231 Nguyễn Văn Cừ,Phường 4, Quận 5, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.682299, 10.763327), 4326));
+(3, 'Lê Văn Cường', '1995-02-10', 'male', 'lecuong@email.com', '0903334443', '123', 'patient', 1, 'avatars/patient_cuong.jpg', '171 Đ. Cao Đạt, Phường Chợ Quán, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.683662, 10.754311), 4326)),
+(4, 'Phạm Thị Dung', '2000-07-30', 'female', 'phamtdung@email.com', '0903334444', '123', 'patient', 1, 'avatars/patient_dung.jpg', '231 Nguyễn Văn Cừ,Phường 4, Quận 5, Hồ Chí Minh, Việt Nam', ST_SRID(POINT(106.682299, 10.763327), 4326));
 
 
 CREATE DATABASE doctor_db;
