@@ -28,6 +28,11 @@ public class UserController {
         List<UserInfoDTO> user = userService.getUsers();
         return ResponseEntity.ok(user);
     }
+    @GetMapping("/batch")
+    public List<UserInfoDTO> getUsersByIds(@RequestParam("userIds") List<Integer> userIds) {
+        return userService.getUsersByIds(userIds);
+    }
+
 
     // ========== ACCOUNT MANAGEMENT APIs ==========
     
