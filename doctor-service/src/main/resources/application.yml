@@ -13,7 +13,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/doctor_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
     username: root
-    password: Oanh2004!
+    password: Phuong35
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA/Hibernate configuration

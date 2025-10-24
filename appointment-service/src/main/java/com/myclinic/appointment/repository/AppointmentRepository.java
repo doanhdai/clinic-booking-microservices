@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
@@ -38,4 +39,12 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    // Thống kê theo khoảng ngày (không lấy giờ) dựa trên Starttime
+    List<Appointment> findByDoctorIdAndAppointmentStarttimeBetween(Integer doctorId, LocalDateTime from, LocalDateTime to);
+
+    List<Appointment> findByAppointmentStarttimeBetween(LocalDateTime from, LocalDateTime to);
+
+    List<Appointment> findByDoctorIdInAndAppointmentStarttimeBetween(List<Integer> doctorIds, LocalDateTime from, LocalDateTime to);
+
 }

@@ -5,6 +5,10 @@ import com.myclinic.appointment.dto.DoctorDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Map;
 
 @FeignClient(
         name = "doctor-service",               // trùng tên đăng ký trên Eureka
@@ -20,6 +24,14 @@ public interface DoctorClient {
 
     @GetMapping("/{userId}")
     DoctorDTO getDoctorById(@PathVariable("userId") Integer userId);
+
+    @GetMapping("/filter")
+    List<DoctorDTO> getDoctorsWithFilters(
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String name);
+
+    @GetMapping("/specialty/ids/{specialty}")
+    List<Integer> getDoctorIdsBySpecialty(@PathVariable String specialty);
 }
 
 

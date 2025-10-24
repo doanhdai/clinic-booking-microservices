@@ -168,4 +168,36 @@ public class DoctorService {
         }
     }
 
+    //-------------------------------------------------------------------//
+    public List<DoctorDTO> getDoctorsBySpecializationAndName(String specialization, String name) {
+        log.info("Fetching doctors by specialization: {} and filtering by name: {}", specialization, name);
+
+        // Lấy bác sĩ theo specialization từ DB
+        List<Doctor> doctors = doctorRepository.findBySpecializationContaining(specialization);
+
+        // Enrich với thông tin user (fullName)
+        List<DoctorDTO> doctorDTOs = enrichDoctorDTOs(doctors);
+
+        // Nếu có name, filter tiếp
+        if (name != null && !name.isBlank()) {
+            doctorDTOs = doctorDTOs.stream()
+                    .filter(d -> d.getFullName() != null && containsIgnoreCaseAndAccent (d.getFullName(),name))
+                    .collect(Collectors.toList());
+        }
+
+        return doctorDTOs;
+    }
+
+    public List<Integer> getDoctorIdsBySpecialty(String specialty) {
+        log.info("Fetching doctor IDs for specialty: {}", specialty);
+
+        // Lấy danh sách bác sĩ theo specialization
+        List<Doctor> doctors = doctorRepository.findBySpecializationContaining(specialty);
+
+        // Lấy ra doctor IDs
+        return doctors.stream()
+                .map(Doctor::getUserId)      // lấy ID từ entity Doctor
+                .collect(Collectors.toList());
+    }
+
 }

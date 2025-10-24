@@ -11,16 +11,16 @@ import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
-    
+
     @Query("SELECT d FROM Doctor d WHERE d.specialization LIKE %:specialization%")
     List<Doctor> findBySpecializationContaining(@Param("specialization") String specialization);
-    
+
     @Query("SELECT d FROM Doctor d WHERE d.description LIKE %:keyword%")
     List<Doctor> findByDescriptionContaining(@Param("keyword") String keyword);
-    
+
     @Query("SELECT d FROM Doctor d WHERE d.specialization LIKE %:specialization% AND d.description LIKE %:keyword%")
-    List<Doctor> findBySpecializationAndDescriptionContaining(@Param("specialization") String specialization, 
-                                                             @Param("keyword") String keyword);
+    List<Doctor> findBySpecializationAndDescriptionContaining(@Param("specialization") String specialization,
+                                                              @Param("keyword") String keyword);
 
     @Query(value = """
             SELECT d.*
