@@ -15,16 +15,16 @@ import java.util.List;
 @Slf4j
 @CrossOrigin(origins = "*")
 public class DoctorController {
-    
+
     private final DoctorService doctorService;
-    
+
     @GetMapping
     public ResponseEntity<List<DoctorDTO>> getAllDoctors() {
         log.info("GET /api/doctors - Fetching all doctors");
         List<DoctorDTO> doctors = doctorService.getAllDoctors();
         return ResponseEntity.ok(doctors);
     }
-    
+
     @GetMapping("/specialization/{specialization}")
     public ResponseEntity<List<DoctorDTO>> getDoctorsBySpecialization(
             @PathVariable String specialization) {
@@ -67,5 +67,24 @@ public class DoctorController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(doctor);
+    }
+
+    ///-------------------------------------------------------------------
+    @GetMapping("/filter")
+    public ResponseEntity<List<DoctorDTO>> getDoctorsWithFilters(
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String name) {
+
+        log.info("GET /api/doctors/filter - specialty: {}, name: {}", specialty, name);
+
+        List<DoctorDTO> doctors = doctorService.getDoctorsBySpecializationAndName(specialty, name);
+
+        return ResponseEntity.ok(doctors);
+    }
+
+    @GetMapping("/specialty/ids/{specialty}")
+    public ResponseEntity<List<Integer>> getDoctorIdsBySpecialty(@PathVariable String specialty) {
+        List<Integer> doctorIds = doctorService.getDoctorIdsBySpecialty(specialty);
+        return ResponseEntity.ok(doctorIds);
     }
 }

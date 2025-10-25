@@ -85,4 +85,38 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found with email: " + email);
         }
     }
+
+    @PostMapping
+    public ResponseEntity<UserInfoDTO> createUser(@RequestBody UserInfoDTO dto) {
+        log.info("POST /api/users - Creating new user");
+        UserInfoDTO newUser = userService.createUser(dto);
+        return ResponseEntity.status(201).body(newUser);
+    }
+
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserInfoDTO> updateUser(
+            @PathVariable("userId") int userId,
+            @RequestBody UserInfoDTO dto) {
+
+        log.info("PUT /api/users/{} - Updating user", userId);
+        UserInfoDTO updatedUser = userService.updateUser(userId, dto);
+
+        if (updatedUser == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/only-doctors")
+    public ResponseEntity<List<UserInfoDTO>> getListDoctors() {
+        log.info("GET /api/users/only-doctors - Fetching doctors");
+        List<UserInfoDTO> doctors = userService.getOnlyDoctors();
+        return ResponseEntity.ok(doctors);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> softDeleteUser(@PathVariable Integer id) {
+        log.info("DELETE /api/users/{} - Soft deleting user", id);
+        userService.softDelete(id);
+        return ResponseEntity.ok("Đã vô hiệu hóa user");
+    }
 }
