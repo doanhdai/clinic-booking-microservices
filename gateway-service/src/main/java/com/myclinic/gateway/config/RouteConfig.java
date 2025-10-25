@@ -15,7 +15,11 @@ public class RouteConfig {
                 .route("user-service", r -> r
                         .path("/api/users/**")
                         .uri("lb://USER-SERVICE"))
-                
+                //login,register
+                .route("user-service", r-> r
+                        .path("/api/auth/**")
+                        .uri("lb://USER-SERVICE")
+                )
                 // Doctor Service routes
                 .route("doctor-service", r -> r
                         .path("/api/doctors/**")

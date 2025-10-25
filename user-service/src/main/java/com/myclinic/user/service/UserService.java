@@ -8,6 +8,7 @@ import com.myclinic.user.mapper.UserMapper;
 import com.myclinic.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ public class UserService {
     
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-
+    private final PasswordEncoder passwordEncoder;
     public List<UserInfoDTO> getUsers() {
         List<User> list = userRepository.findAll();
         return userMapper.toDtoList(list);
@@ -76,7 +77,7 @@ public class UserService {
         }
         
         User user = userOpt.get();
-        user.setPassword(request.getNewPassword());
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
         
         log.info("Password reset successfully for user: {}", request.getEmail());
@@ -97,10 +98,54 @@ public class UserService {
         }
         
         User user = userOpt.get();
-        user.setPassword("123"); // Password mặc định
+        user.setPassword(passwordEncoder.encode("123")); // Password mặc định
         userRepository.save(user);
         
         log.info("Password reset to default successfully for user: {}", email);
         return true;
     }
+    // ==================== ADMIN MANAGEMENT ====================
+    public UserInfoDTO createUser(UserInfoDTO dto) {
+        User user = new User();
+        user.setEmail(dto.getEmail());
+        user.setFullName(dto.getFullName());
+        user.setPassword(passwordEncoder.encode("123456")); // mật khẩu mặc định
+        user.setRole(dto.getRole() != null
+                ? User.Role.valueOf(dto.getRole().toLowerCase())
+                : User.Role.patient);
+
+        user.setStatus(1);
+        userRepository.save(user);
+        return userMapper.toDto(user);
+    }
+
+    public UserInfoDTO updateUser(Integer userId, UserInfoDTO dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFullName(dto.getFullName());
+        user.setRole(User.Role.valueOf(dto.getRole()));
+        user.setStatus(dto.getStatus());
+        userRepository.save(user);
+        return userMapper.toDto(user);
+    }
+
+    public void deleteUser(Integer userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public List<UserInfoDTO> searchUsers(String keyword) {
+        List<User> users;
+
+        if (keyword == null || keyword.isEmpty()) {
+            users = userRepository.findAll();
+        } else {
+            users = userRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+        }
+
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
+
+
 }

@@ -20,4 +20,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     // Tìm user theo email
     Optional<User> findByEmail(String email);
+    Boolean existsByEmail(String email);
+    List<User> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String fullName, String email);
+
 }
