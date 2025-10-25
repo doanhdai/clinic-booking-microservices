@@ -1,11 +1,11 @@
 spring:
   application:
     name: appointment-service
-  
+
   # Profile-based Config Service URL
   config:
     import: "optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:8888"
-  
+
   cloud:
     config:
       enabled: true
