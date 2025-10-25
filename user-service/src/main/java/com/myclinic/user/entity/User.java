@@ -55,6 +55,9 @@ public class User {
     @Column(name = "avatar", length = 255)
     private String avatar;
 
+    @Column(name = "password", nullable = false, unique = true, length = 255)
+    private String password;
+
     public enum Gender {
         male, female, other
     }

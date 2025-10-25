@@ -16,4 +16,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     @Query("SELECT u FROM User u WHERE u.role = 'doctor' AND u.status = 1")
     List<User> findActiveDoctors();
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
+
+    List<User> findByRoleAndStatusNot(User.Role role, Integer status);
 }
