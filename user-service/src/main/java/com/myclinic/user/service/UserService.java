@@ -1,17 +1,24 @@
 package com.myclinic.user.service;
 
 import com.myclinic.user.dto.UserInfoDTO;
+import com.myclinic.user.dto.UserAccountDTO;
+import com.myclinic.user.dto.ResetPasswordRequest;
 import com.myclinic.user.entity.User;
 import com.myclinic.user.mapper.UserMapper;
 import com.myclinic.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +26,13 @@ import java.util.List;
 public class UserService {
     
     private final UserRepository userRepository;
-
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+
+    public List<UserInfoDTO> getUsers() {
+        List<User> list = userRepository.findAll();
+        return userMapper.toDtoList(list);
+    }
 
     public UserInfoDTO getUserById(Integer userId) {
         log.info("Fetching user by ID: {}", userId);
@@ -65,7 +72,6 @@ public class UserService {
         user.setFullName(dto.getFullName());
         user.setBirth(dto.getBirth());
 
-        // Gender safe
         User.Gender gender = User.Gender.female; // default
         if (dto.getGender() != null) {
             try {
@@ -76,7 +82,6 @@ public class UserService {
         }
         user.setGender(gender);
 
-        // Role safe
         User.Role role = User.Role.patient; // default
         if (dto.getRole() != null) {
             try {
@@ -95,11 +100,15 @@ public class UserService {
         // Hash password
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 
+        user.setAddress("");
+        GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+        Point defaultLocation = geometryFactory.createPoint(new Coordinate(0.0, 0.0));
+        user.setLocation(defaultLocation);
+
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
-
         return userMapper.toDto(user);
     }
 
@@ -139,4 +148,56 @@ public class UserService {
         userRepository.save(user);
     }
 
+    // ========== ACCOUNT MANAGEMENT METHODS ==========
+    
+    /**
+     * Lấy danh sách tài khoản (không bao gồm password)
+     */
+    public List<UserAccountDTO> getAllUserAccounts() {
+        log.info("Fetching all user accounts");
+        List<User> users = userRepository.findAll();
+        return userMapper.toAccountDtoList(users);
+    }
+    
+    /**
+     * Reset password cho user theo email
+     */
+    @Transactional
+    public boolean resetUserPassword(ResetPasswordRequest request) {
+        log.info("Resetting password for email: {}", request.getEmail());
+        
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isEmpty()) {
+            log.warn("User not found with email: {}", request.getEmail());
+            return false;
+        }
+        
+        User user = userOpt.get();
+        user.setPassword(request.getNewPassword());
+        userRepository.save(user);
+        
+        log.info("Password reset successfully for user: {}", request.getEmail());
+        return true;
+    }
+    
+    /**
+     * Reset password về mặc định (123) cho user theo email
+     */
+    @Transactional
+    public boolean resetPasswordToDefault(String email) {
+        log.info("Resetting password to default for email: {}", email);
+        
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            log.warn("User not found with email: {}", email);
+            return false;
+        }
+        
+        User user = userOpt.get();
+        user.setPassword("123"); // Password mặc định
+        userRepository.save(user);
+        
+        log.info("Password reset to default successfully for user: {}", email);
+        return true;
+    }
 }

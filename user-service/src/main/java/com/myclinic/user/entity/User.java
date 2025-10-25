@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +38,9 @@ public class User {
     @Column(name = "phone", nullable = false, unique = true, length = 30)
     private String phone;
 
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, columnDefinition = "ENUM('patient', 'doctor', 'admin') DEFAULT 'patient'")
     private Role role = Role.patient;
@@ -55,8 +59,11 @@ public class User {
     @Column(name = "avatar", length = 255)
     private String avatar;
 
-    @Column(name = "password", nullable = false, unique = true, length = 255)
-    private String password;
+    @Column(name = "address", nullable = false, length = 255)
+    private String address;
+
+    @Column(name = "location", columnDefinition = "POINT SRID 4326")
+    private Point location;
 
     public enum Gender {
         male, female, other

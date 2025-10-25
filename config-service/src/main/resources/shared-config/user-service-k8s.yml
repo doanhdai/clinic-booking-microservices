@@ -1,43 +1,36 @@
-# Doctor Service Configuration
+# User Service Configuration for Kubernetes
 server:
-  port: 8083
+  port: 8081
 
 spring:
   application:
-    name: doctor-service
+    name: user-service
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Ho_Chi_Minh
   
-  # Database configuration
+  # Database configuration - will be overridden by environment variables
   datasource:
-    url: jdbc:mysql://localhost:3306/doctor_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
-    username: root
-    password: 
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql-service:3306/user_db?useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA/Hibernate configuration
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-  
-  # Security configuration
-  security:
-    user:
-      name: admin
-      password: admin123
-      roles: ADMIN
 
 # Eureka Client configuration
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://discovery-service:8761/eureka/}
     register-with-eureka: true
     fetch-registry: true
   instance:
@@ -57,15 +50,14 @@ management:
 # Logging configuration
 logging:
   level:
-    com.myclinic.doctor: DEBUG
-    org.springframework.security: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.myclinic.user: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
 
 # Custom application properties
 app:
-  doctor:
-    default-booking-fee: 100000
-    default-duration-minutes: 30
-    max-schedule-slots-per-day: 20
-    cancel-policy-hours: 2
+  user:
+    default-role: patient
+    password-min-length: 6
+    max-login-attempts: 5
+    account-lockout-duration: 30m

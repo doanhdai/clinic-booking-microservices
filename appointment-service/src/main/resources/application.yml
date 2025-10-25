@@ -1,21 +1,23 @@
-server:
-  port: 8082
-
 spring:
   application:
     name: appointment-service
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: Asia/Ho_Chi_Minh
-  
+
+  # Profile-based Config Service URL
+  config:
+    import: "optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:8888"
+
+  cloud:
+    config:
+      enabled: true
+      fail-fast: false
+
   # Database configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/appointment_db?serverTimezone=Asia/Ho_Chi_Minh
-    username: root
-    password: Phuong35
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/appointment_db?useSSL=false&serverTimezone=UTC
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  
-  # JPA/Hibernate configuration
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,40 +25,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-        format_sql: true
 
-# Eureka Client configuration
+# Eureka configuration
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
 
-# Feign Client configuration
-feign:
-  client:
-    config:
-      default:
-        connect-timeout: 5000
-        read-timeout: 5000
+server:
+  port: 8082
 
-# Management endpoints
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
-
-# Logging configuration
 logging:
   level:
     com.myclinic.appointment: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

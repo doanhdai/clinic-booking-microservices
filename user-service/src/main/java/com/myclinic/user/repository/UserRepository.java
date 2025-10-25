@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
@@ -22,4 +23,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByPhone(String phone);
 
     List<User> findByRoleAndStatusNot(User.Role role, Integer status);
+    
+    // Tìm user theo email
+    Optional<User> findByEmail(String email);
 }

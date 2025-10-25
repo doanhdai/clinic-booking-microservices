@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,7 +20,6 @@ public class DoctorDTO {
     private Integer userId;
     private String specialization;
     private String description;
-    private String address;
     private String bankNumber;
     private String bankName;
     private String bankId;
@@ -36,4 +36,7 @@ public class DoctorDTO {
     private LocalDateTime updatedAt;
     private Integer status;
     private String avatar;
+    private String address;
+    private Double lat;  // vi do
+    private Double lng;  // kinh do
 }
