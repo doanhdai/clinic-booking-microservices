@@ -8,6 +8,7 @@ import com.myclinic.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,22 +63,22 @@ public class UserController {
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetUserPassword(@RequestBody ResetPasswordRequest request) {
         log.info("POST /api/users/reset-password - Resetting password for email: {}", request.getEmail());
-        
+
         boolean success = userService.resetUserPassword(request);
         if (success) {
-            return ResponseEntity.ok().body("Password reset successfully for user: " + request.getEmail());
+            return ResponseEntity.ok().body("Password reset successuflly for user: " + request.getEmail());
         } else {
             return ResponseEntity.badRequest().body("User not found with email: " + request.getEmail());
         }
     }
-    
+
     /**
      * Reset password về mặc định (123) cho user theo email
      */
     @PostMapping("/reset-password-default")
     public ResponseEntity<?> resetPasswordToDefault(@RequestParam String email) {
         log.info("POST /api/users/reset-password-default - Resetting password to default for email: {}", email);
-        
+
         boolean success = userService.resetPasswordToDefault(email);
         if (success) {
             return ResponseEntity.ok().body("Password reset to default (123) successfully for user: " + email);
@@ -85,26 +86,63 @@ public class UserController {
             return ResponseEntity.badRequest().body("User not found with email: " + email);
         }
     }
+    // ==================== ADMIN MANAGEMENT ====================
 
-    @PostMapping
-    public ResponseEntity<UserInfoDTO> createUser(@RequestBody UserInfoDTO dto) {
-        log.info("POST /api/users - Creating new user");
-        UserInfoDTO newUser = userService.createUser(dto);
-        return ResponseEntity.status(201).body(newUser);
+    // phần này chưa check đk gì hết 
+    @PostMapping("/admin")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> createUser(@RequestBody UserInfoDTO userInfo) {
+        log.info("POST /api/users/admin - Creating new user");
+        UserInfoDTO createdUser = userService.createUser(userInfo);
+        return ResponseEntity.ok(createdUser);
     }
 
-
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserInfoDTO> updateUser(
-            @PathVariable("userId") int userId,
-            @RequestBody UserInfoDTO dto) {
-
-        log.info("PUT /api/users/{} - Updating user", userId);
-        UserInfoDTO updatedUser = userService.updateUser(userId, dto);
-
-        if (updatedUser == null) return ResponseEntity.notFound().build();
+    @PutMapping("/admin/{userId}")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> updateUser(@PathVariable Integer userId, @RequestBody UserInfoDTO userInfo) {
+        log.info("PUT /api/users/admin/{} - Updating user", userId);
+        UserInfoDTO updatedUser = userService.updateUser(userId, userInfo);
         return ResponseEntity.ok(updatedUser);
     }
+
+    @DeleteMapping("/admin/{userId}")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<?> deleteUser(@PathVariable Integer userId) {
+        log.info("DELETE /api/users/admin/{} - Deleting user", userId);
+        userService.deleteUser(userId);
+        return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @GetMapping("/admin/search")
+    @PreAuthorize("hasAuthority('admin')")
+    public ResponseEntity<List<UserInfoDTO>> searchUsers(@RequestParam(required = false) String keyword) {
+        log.info("GET /api/users/admin/search?keyword={} - Searching users", keyword);
+        List<UserInfoDTO> users = userService.searchUsers(keyword);
+        return ResponseEntity.ok(users);
+    }
+
+    // phần này ai làm nó conflict với cái mình ( tiệp) làm rồi 
+    // nếu k check role vs token mà để api public là hỏng à, nó gửi req tùm lum 
+
+    // @PostMapping
+    // public ResponseEntity<UserInfoDTO> createUser(@RequestBody UserInfoDTO dto) {
+    //     log.info("POST /api/users - Creating new user");
+    //     UserInfoDTO newUser = userService.createUser(dto);
+    //     return ResponseEntity.status(201).body(newUser);
+    // }
+
+
+    // @PutMapping("/{userId}")
+    // public ResponseEntity<UserInfoDTO> updateUser(
+    //         @PathVariable("userId") int userId,
+    //         @RequestBody UserInfoDTO dto) {
+
+    //     log.info("PUT /api/users/{} - Updating user", userId);
+    //     UserInfoDTO updatedUser = userService.updateUser(userId, dto);
+
+    //     if (updatedUser == null) return ResponseEntity.notFound().build();
+    //     return ResponseEntity.ok(updatedUser);
+    // }
 
     @GetMapping("/only-doctors")
     public ResponseEntity<List<UserInfoDTO>> getListDoctors() {
